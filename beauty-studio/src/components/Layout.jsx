@@ -1097,6 +1097,7 @@ export default function Layout() {
           display: flex;
           align-items: center;
           justify-content: center;
+          touch-action: pan-y;
         }
 
         .gallery-photo-shell {
@@ -1170,6 +1171,35 @@ export default function Layout() {
 
         .gallery-nav-next {
           right: 12px;
+        }
+
+        @media (max-width: 767px) {
+          .gallery-section {
+            background-position: center top;
+            padding: 56px 0 40px;
+          }
+
+          .gallery-stage {
+            min-height: clamp(420px, 62vh, 620px);
+          }
+
+          .gallery-target {
+            width: min(90vw, 360px);
+          }
+
+          .gallery-nav {
+            width: 42px;
+            height: 42px;
+            font-size: 26px;
+          }
+
+          .gallery-nav-prev {
+            left: 8px;
+          }
+
+          .gallery-nav-next {
+            right: 8px;
+          }
         }
         
         /* Контакти секция */

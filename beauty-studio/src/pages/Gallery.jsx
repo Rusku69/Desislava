@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+﻿import { useRef, useState } from 'react'
 
 const galleryImages = [
   { src: '/gallery1.png', alt: 'Галерия 1', ratio: 983 / 1310, fit: 'cover', scale: 1.06, posY: '50%' },
@@ -12,6 +12,8 @@ const galleryImages = [
 
 export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState(0)
+  const touchStartX = useRef(null)
+  const touchDeltaX = useRef(0)
 
   const showPrev = () => {
     setActiveIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)
@@ -19,6 +21,24 @@ export default function Gallery() {
 
   const showNext = () => {
     setActiveIndex((prev) => (prev + 1) % galleryImages.length)
+  }
+
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.changedTouches[0].clientX
+    touchDeltaX.current = 0
+  }
+
+  const handleTouchMove = (event) => {
+    if (touchStartX.current === null) return
+    touchDeltaX.current = event.changedTouches[0].clientX - touchStartX.current
+  }
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null) return
+    if (touchDeltaX.current <= -50) showNext()
+    if (touchDeltaX.current >= 50) showPrev()
+    touchStartX.current = null
+    touchDeltaX.current = 0
   }
 
   const activeImage = galleryImages[activeIndex]
@@ -31,7 +51,13 @@ export default function Gallery() {
       <section className="gallery-section gallery-bg">
         <div className="container">
           <div className="gallery-stage">
-            <div className="gallery-target">
+            <div
+              className="gallery-target"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
+            >
               <div
                 className="gallery-photo-shell"
                 style={{
